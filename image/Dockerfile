@@ -29,7 +29,17 @@ RUN \
   apt-get autoclean && \
   rm -rf /var/lib/apt/lists/* /var/tmp/* /tmp/* /root/.npm
 
-COPY root/ /
-RUN chmod +x /etc/s6-overlay/s6-rc.d/svc-mcp/run
+# Don't `COPY root/ /` directly: Docker's classic builder (what Synology uses)
+# stamps the checkout's directory modes onto / and /etc. On a Synology share
+# those are ACL-style modes (no "other" access), which locks the non-root abc
+# user out of /etc — breaking name resolution ("localhost") and OpenSSL.
+# Stage the files, then copy them in without their modes.
+COPY root/ /tmp/overlay/
+RUN \
+  cp -r --no-preserve=mode,ownership /tmp/overlay/. / && \
+  rm -rf /tmp/overlay && \
+  chmod 755 / /etc /etc/s6-overlay /etc/s6-overlay/s6-rc.d && \
+  chmod -R a+rX /etc/s6-overlay/s6-rc.d/svc-mcp /etc/s6-overlay/s6-rc.d/user && \
+  chmod 755 /etc/s6-overlay/s6-rc.d/svc-mcp/run
 
 EXPOSE 3000 8931

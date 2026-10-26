@@ -90,6 +90,7 @@ then only decides; code executes. Same pattern for any site you use weekly.
 | MCP service not running | `docker compose logs browser \| grep -i mcp`; s6 restarts it automatically |
 | claude.ai says "Authorization with the MCP server failed" | see the OAuth notes in docs/cloudflare.md |
 | Build fails pulling the base image (`toomanyrequests`, timeouts) | ghcr.io may be down — check https://status.linuxserver.io. Set `BASE_IMAGE=linuxserver/chromium:latest` in `.env` to use the Docker Hub copy, then rebuild. If Docker Hub rate-limits, `sudo docker login` or wait an hour. |
+| `cannot resolve listen address 'localhost'` or OpenSSL `Permission denied` | the image was built with an old Dockerfile that copied Synology folder permissions onto `/etc`. `git pull`, then `sudo docker compose up -d --build --force-recreate`. |
 | `path "./image" not found` | the project folder isn't the cloned repo — build from the folder that contains `image/` |
 
 ## Security notes
