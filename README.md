@@ -52,7 +52,7 @@ available to Claude.
 5. `docker compose up -d --build` (first build takes a few minutes).
 6. Open https://browser.zsrobinson.com → you should see Chromium. Sign in to AMC.
 7. claude.ai → Settings → Connectors → Add custom connector →
-   `https://browsermcp.zsrobinson.com/mcp`. **Name it "Home Browser"** —
+   `https://browsermcp.zsrobinson.com/mcp`. **Name it "Browser"** —
    the skills refer to it by that name.
 8. Save the two skills in `skills/` (zip each folder and upload under
    Settings → Capabilities → Skills, or save from Claude's skill card).
