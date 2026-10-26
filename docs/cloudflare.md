@@ -67,3 +67,25 @@ Reference: https://developers.cloudflare.com/cloudflare-one/access-controls/ai-c
 
 **Never** "fix" connector auth by removing the Access app — an open MCP
 endpoint is a remote control for every account you're signed in to.
+
+## 4. TURN key for a smoother viewer (optional)
+
+The viewer streams over WebSockets through the tunnel by default, which
+stalls whenever the connection is congested. WebRTC mode sends video over UDP
+via a TURN relay instead; Cloudflare's is free for this kind of use.
+
+1. Dashboard → **Realtime** (formerly "Calls") → **TURN Server** → Create.
+   Name it `browser-viewer`.
+2. Copy the **Turn Token ID** and the **API Token** (shown once).
+3. In `.env`:
+   ```
+   VIEWER_MODE=webrtc
+   CLOUDFLARE_TURN=true
+   CLOUDFLARE_TURN_KEY_ID=<Turn Token ID>
+   CLOUDFLARE_TURN_API_TOKEN=<API Token>
+   ```
+4. `sudo docker compose up -d` (no rebuild).
+
+Signaling still goes through the tunnel and Access, so the login is unchanged.
+To go back, set `VIEWER_MODE=websockets` (or remove the lines) and `up -d`.
+The viewer sidebar can also switch modes live.

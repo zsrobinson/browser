@@ -34,6 +34,15 @@ services:
       - SELKIES_FRAMERATE=15,8-30
       - SELKIES_MANUAL_WIDTH=1280
       - SELKIES_MANUAL_HEIGHT=800
+      # Streaming mode. websockets (default) rides the tunnel over TCP and
+      # stalls on any congestion. webrtc sends video over UDP through
+      # Cloudflare's TURN relay: much smoother. In webrtc mode the encoder
+      # falls back from jpeg to the fastest WebRTC codec automatically.
+      # Set these in .env (see docs/cloudflare.md, section 4).
+      - SELKIES_MODE=${VIEWER_MODE:-websockets}
+      - SELKIES_ENABLE_CLOUDFLARE_TURN=${CLOUDFLARE_TURN:-false}
+      - SELKIES_CLOUDFLARE_TURN_TOKEN_ID=${CLOUDFLARE_TURN_KEY_ID:-}
+      - SELKIES_CLOUDFLARE_TURN_API_TOKEN=${CLOUDFLARE_TURN_API_TOKEN:-}
       # Unquoted on purpose: quotes in list-form env become part of the value
       # and Chromium silently ignores the flags.
       - CHROME_CLI=--remote-debugging-port=9222 --user-data-dir=/config/agent-profile --no-first-run --no-default-browser-check --disable-features=Translate,MediaRouter --renderer-process-limit=3 --disable-backgrounding-occluded-windows --disable-renderer-backgrounding --disable-background-timer-throttling about:blank
