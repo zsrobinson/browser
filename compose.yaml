@@ -23,6 +23,9 @@ services:
       - TZ=${TZ}
       - MCP_HOSTNAME=${MCP_HOSTNAME}
       - RESTART_APP=true       # relaunch Chromium if its window gets closed
+      # X11 instead of the newer Wayland mode: Wayland waits for a compositor
+      # socket that never appears on a GPU-less NAS, so Chromium never starts.
+      - PIXELFLUX_WAYLAND=false
       # Unquoted on purpose: quotes in list-form env become part of the value
       # and Chromium silently ignores the flags.
       - CHROME_CLI=--remote-debugging-port=9222 --user-data-dir=/config/agent-profile --no-first-run --no-default-browser-check --disable-features=Translate,MediaRouter --renderer-process-limit=3 about:blank
