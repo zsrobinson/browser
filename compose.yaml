@@ -15,8 +15,9 @@ services:
       context: ./image       # needs the image/ folder from the repo next to this file
       args:
         BASE_IMAGE: ${BASE_IMAGE:-ghcr.io/linuxserver/chromium:latest}
+    # Built locally. `up -d` reuses the existing image; rebuild only after a
+    # git pull that changes image/, with `docker compose up -d --build`.
     image: browser:local
-    pull_policy: build       # local image; don't try to pull it from a registry
     environment:
       - PUID=${PUID}
       - PGID=${PGID}

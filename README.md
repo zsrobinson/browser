@@ -60,8 +60,9 @@ available to Claude.
 
 ## Updating
 
-`docker compose build --pull && docker compose up -d` picks up new Chromium
-and Playwright MCP versions. Once everything works, pin `@playwright/mcp@<version>`
+`sudo docker compose build --pull && sudo docker compose up -d` picks up new
+Chromium and Playwright MCP versions. Plain `up -d` reuses the existing image,
+so config-only changes (compose.yaml, .env) never trigger a rebuild. Once everything works, pin `@playwright/mcp@<version>`
 in `image/Dockerfile` so updates are deliberate.
 
 ## Speed
