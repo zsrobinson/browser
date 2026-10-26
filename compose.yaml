@@ -26,6 +26,14 @@ services:
       # X11 instead of the newer Wayland mode: Wayland waits for a compositor
       # socket that never appears on a GPU-less NAS, so Chromium never starts.
       - PIXELFLUX_WAYLAND=false
+      # Viewer tuned for a GPU-less NAS over a tunnel. JPEG is the lightest
+      # software encoder for mostly-still web pages and every browser decodes
+      # it (H.264 via WebCodecs is shaky in Firefox). Fixed 1280x800 desktop,
+      # 15 fps to start, capped at 30. All adjustable in the viewer sidebar.
+      - SELKIES_ENCODER=jpeg
+      - SELKIES_FRAMERATE=15,8-30
+      - SELKIES_MANUAL_WIDTH=1280
+      - SELKIES_MANUAL_HEIGHT=800
       # Unquoted on purpose: quotes in list-form env become part of the value
       # and Chromium silently ignores the flags.
       - CHROME_CLI=--remote-debugging-port=9222 --user-data-dir=/config/agent-profile --no-first-run --no-default-browser-check --disable-features=Translate,MediaRouter --renderer-process-limit=3 about:blank
