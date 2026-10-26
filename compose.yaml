@@ -36,7 +36,7 @@ services:
       - SELKIES_MANUAL_HEIGHT=800
       # Unquoted on purpose: quotes in list-form env become part of the value
       # and Chromium silently ignores the flags.
-      - CHROME_CLI=--remote-debugging-port=9222 --user-data-dir=/config/agent-profile --no-first-run --no-default-browser-check --disable-features=Translate,MediaRouter --renderer-process-limit=3 about:blank
+      - CHROME_CLI=--remote-debugging-port=9222 --user-data-dir=/config/agent-profile --no-first-run --no-default-browser-check --disable-features=Translate,MediaRouter --renderer-process-limit=3 --disable-backgrounding-occluded-windows --disable-renderer-backgrounding --disable-background-timer-throttling about:blank
     volumes:
       - ./data:/config
     shm_size: "1gb"            # Docker's 64MB default crashes Chromium on real pages
