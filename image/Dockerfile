@@ -14,7 +14,9 @@ ENV PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD=1
 RUN \
   echo "**** install node ****" && \
   apt-get update && \
-  apt-get install -y --no-install-recommends nodejs npm && \
+  apt-get install -y --no-install-recommends nodejs && \
+  echo "**** npm: bundled with NodeSource's nodejs (which the base image uses); Debian's nodejs needs the separate package ****" && \
+  (command -v npm >/dev/null || apt-get install -y --no-install-recommends npm) && \
   echo "**** install playwright mcp ****" && \
   mkdir -p /opt/mcp && cd /opt/mcp && \
   npm init -y >/dev/null && \
