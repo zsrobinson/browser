@@ -11,8 +11,9 @@ services:
   # Chromium + web viewer (port 3000) + Playwright MCP (port 8931).
   # The profile (cookies, logins) lives in ./data and survives restarts.
   browser:
-    build: ./image
+    build: ./image           # needs the image/ folder from the repo next to this file
     image: browser:local
+    pull_policy: build       # local image; don't try to pull it from a registry
     environment:
       - PUID=${PUID}
       - PGID=${PGID}
