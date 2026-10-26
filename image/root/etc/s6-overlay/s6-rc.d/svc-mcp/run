@@ -16,4 +16,5 @@ exec s6-setuidgid abc \
     --output-dir=/config/mcp-output \
     --host=0.0.0.0 \
     --port=8931 \
-    --allowed-hosts="${MCP_HOSTNAME},browser:8931,localhost:8931"
+    --allowed-hosts="${MCP_HOSTNAME},browser:8931,localhost:8931" \
+    ${MCP_EXTRA_ARGS}

@@ -23,6 +23,13 @@ services:
       - PGID=${PGID}
       - TZ=${TZ}
       - MCP_HOSTNAME=${MCP_HOSTNAME}
+      # Playwright MCP tuning (change here + `up -d`, no rebuild):
+      #   snapshot-mode=none  skip the full-page accessibility snapshot after
+      #                       every action (slow on the NAS; Claude reads pages
+      #                       with targeted scripts instead)
+      #   timeout-action      the NAS is slow; 5s default caused false failures
+      #   console-level       only errors in tool responses
+      - MCP_EXTRA_ARGS=${MCP_EXTRA_ARGS:---snapshot-mode=none --timeout-action=15000 --console-level=error}
       - RESTART_APP=true       # relaunch Chromium if its window gets closed
       # X11 instead of the newer Wayland mode: Wayland waits for a compositor
       # socket that never appears on a GPU-less NAS, so Chromium never starts.

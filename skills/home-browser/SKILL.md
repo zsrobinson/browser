@@ -38,10 +38,19 @@ Don't use it for general knowledge or public facts a web search answers well.
 
 ## Working fast
 
-Speed matters — the point is that this beats doing it himself.
-- **Read with `browser_evaluate`, not full snapshots.** Return just the text
-  you need (e.g. `main.innerText`, trimmed) or a compact structure. Full
-  snapshots of real sites are huge and slow.
+Speed matters — the point is that this beats doing it himself. Every tool call
+is a round trip through Cloudflare to a slow NAS, so **fewer calls** is the
+main lever.
+- **Batch with `browser_run_code_unsafe`.** One Playwright script can open its
+  own page (`await page.context().newPage()`), visit several URLs one after
+  another, extract compact data, and close the page in a `finally`. Keep each
+  call under ~75 s (the tunnel cuts off around 100 s): give `goto` a timeout
+  (~25 s) and skip remaining work when the budget runs low. Site skills (e.g.
+  `amc-a-list`) have ready-made scripts.
+- Navigation responses don't include page content (snapshots are off for
+  speed). **Read with `browser_evaluate`**, returning just what you need
+  (e.g. `main.innerText`, trimmed) or a compact structure. Avoid `innerText`
+  inside loops — it forces layout on every call; use `textContent`.
 - Use `browser_find` (text/regex) to locate an element's ref before clicking.
 - Screenshots only when layout matters and the DOM doesn't expose it.
 - Go straight to deep links instead of clicking through home pages. Site

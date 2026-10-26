@@ -39,7 +39,7 @@ RUN \
   cp -r --no-preserve=mode,ownership /tmp/overlay/. / && \
   rm -rf /tmp/overlay && \
   chmod 755 / /etc /etc/s6-overlay /etc/s6-overlay/s6-rc.d && \
-  chmod -R a+rX /etc/s6-overlay/s6-rc.d/svc-mcp /etc/s6-overlay/s6-rc.d/user && \
+  chmod -R a+rX /etc/s6-overlay/s6-rc.d/svc-mcp /etc/s6-overlay/s6-rc.d/user /etc/chromium/policies && \
   chmod 755 /etc/s6-overlay/s6-rc.d/svc-mcp/run
 
 EXPOSE 3000 8931
