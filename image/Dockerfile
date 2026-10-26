@@ -4,8 +4,10 @@
 # plus Playwright MCP running as a second supervised service in the same
 # container, talking to Chromium over localhost.
 
-# Pulled straight from GHCR (lscr.io is just a redirector to it).
-FROM ghcr.io/linuxserver/chromium:latest
+# Same image is published to GHCR and Docker Hub; pick with BASE_IMAGE in .env
+# (lscr.io is just a redirector to GHCR).
+ARG BASE_IMAGE=ghcr.io/linuxserver/chromium:latest
+FROM ${BASE_IMAGE}
 
 ENV PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD=1
 
