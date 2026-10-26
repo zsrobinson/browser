@@ -4,7 +4,8 @@
 # plus Playwright MCP running as a second supervised service in the same
 # container, talking to Chromium over localhost.
 
-FROM lscr.io/linuxserver/chromium:latest
+# Pulled straight from GHCR (lscr.io is just a redirector to it).
+FROM ghcr.io/linuxserver/chromium:latest
 
 ENV PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD=1
 
