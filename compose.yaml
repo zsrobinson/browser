@@ -30,7 +30,7 @@ services:
 
   # Cloudflare Tunnel. Routes (set in the Cloudflare dashboard):
   #   browser.zsrobinson.com      -> http://browser:3000   (viewer)
-  #   mcp.browser.zsrobinson.com  -> http://browser:8931   (Claude connector)
+  #   browsermcp.zsrobinson.com   -> http://browser:8931   (Claude connector)
   cloudflared:
     image: cloudflare/cloudflared:latest
     command: tunnel --no-autoupdate run

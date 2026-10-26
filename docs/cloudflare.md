@@ -11,22 +11,10 @@ Networks → Tunnels → Create tunnel (type: cloudflared). Copy the token into
 | Hostname                     | Service              |
 |------------------------------|----------------------|
 | `browser.zsrobinson.com`     | `http://browser:3000`|
-| `mcp.browser.zsrobinson.com` | `http://browser:8931`|
+| `browsermcp.zsrobinson.com` | `http://browser:8931`|
 
 Leave "HTTP Host Header" unset on the MCP route — Playwright MCP checks the
-Host header against `--allowed-hosts`, which expects `mcp.browser.zsrobinson.com`.
-
-### Certificate caveat for `mcp.browser.zsrobinson.com`
-
-Cloudflare's free Universal SSL certificate covers `zsrobinson.com` and one
-level of subdomain (`*.zsrobinson.com`) only. `mcp.browser.zsrobinson.com` is
-two levels deep, so browsers and claude.ai will get a TLS error unless you
-either:
-
-- add **Advanced Certificate Manager** (paid add-on) and issue a cert for
-  `*.browser.zsrobinson.com`, or
-- use a one-level hostname instead (e.g. `mcpbrowser.zsrobinson.com`) — change
-  `MCP_HOSTNAME` in `.env`, the tunnel route, and the Access app.
+Host header against `--allowed-hosts`, which expects `browsermcp.zsrobinson.com`.
 
 ## 2. Access app: the viewer (`browser.zsrobinson.com`)
 
@@ -41,7 +29,7 @@ The linuxserver image has no auth of its own; this app *is* the lock. For a
 second layer you can also set `CUSTOM_USER` / `PASSWORD` env vars on the
 `browser` service (basic auth).
 
-## 3. Access app: the MCP endpoint (`mcp.browser.zsrobinson.com`)
+## 3. Access app: the MCP endpoint (`browsermcp.zsrobinson.com`)
 
 claude.ai custom connectors authenticate with **OAuth only** — they can't send
 a static token. Cloudflare Access can act as the OAuth server so the MCP
@@ -49,19 +37,19 @@ container needs no auth code:
 
 Access → Applications → Add → Self-hosted.
 
-- Domain: `mcp.browser.zsrobinson.com`
+- Domain: `browsermcp.zsrobinson.com`
 - Policy: same as above (your email only)
 - Advanced / OAuth settings: enable **Managed OAuth** (dynamic client registration)
 - Allowed redirect URIs:
   - `https://claude.ai/api/mcp/auth_callback`
   - `https://claude.com/api/mcp/auth_callback`
 
-Check: `curl -s https://mcp.browser.zsrobinson.com/.well-known/oauth-authorization-server`
+Check: `curl -s https://browsermcp.zsrobinson.com/.well-known/oauth-authorization-server`
 should return JSON with `authorization_endpoint`, `token_endpoint`, and
 `registration_endpoint`.
 
 Then in claude.ai: Settings → Connectors → Add custom connector →
-`https://mcp.browser.zsrobinson.com/mcp` → Connect → sign in with your email.
+`https://browsermcp.zsrobinson.com/mcp` → Connect → sign in with your email.
 
 ### If claude.ai's connect step fails
 
@@ -69,7 +57,7 @@ People have reported "Authorization with the MCP server failed" on claude.ai
 with OAuth setups that work in Claude Code. Two things to try:
 
 1. **MCP server portal** (Access → AI controls → MCP servers / portals):
-   register `https://mcp.browser.zsrobinson.com/mcp` as a server, put a portal
+   register `https://browsermcp.zsrobinson.com/mcp` as a server, put a portal
    on its own hostname with Managed OAuth enabled and the same two redirect
    URIs, and add the *portal* URL as the connector.
 2. Re-check the redirect URIs and that the `.well-known` endpoints above

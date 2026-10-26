@@ -6,7 +6,7 @@ that you can watch (or take over) at **https://browser.zsrobinson.com**.
 ```
           phone / laptop                        claude.ai (any device, scheduled tasks)
                 │                                          │
-    browser.zsrobinson.com                    mcp.browser.zsrobinson.com
+    browser.zsrobinson.com                    browsermcp.zsrobinson.com
     (Access: you only)                        (Access + Managed OAuth)
                 │                                          │
                 └────────────── Cloudflare Tunnel ─────────┘
@@ -48,12 +48,11 @@ available to Claude.
 3. `cp .env.example .env`, fill in `PUID`/`PGID` (run `id`) and the tunnel token.
 4. Cloudflare: tunnel, two routes, two Access apps — see
    [docs/cloudflare.md](docs/cloudflare.md). **Do the Access apps before
-   step 5**; the viewer has no login of its own. Note the certificate caveat
-   for `mcp.browser.zsrobinson.com` in that doc.
+   step 5**; the viewer has no login of its own.
 5. `docker compose up -d --build` (first build takes a few minutes).
 6. Open https://browser.zsrobinson.com → you should see Chromium. Sign in to AMC.
 7. claude.ai → Settings → Connectors → Add custom connector →
-   `https://mcp.browser.zsrobinson.com/mcp`. **Name it "Home Browser"** —
+   `https://browsermcp.zsrobinson.com/mcp`. **Name it "Home Browser"** —
    the skills refer to it by that name.
 8. Save the two skills in `skills/` (zip each folder and upload under
    Settings → Capabilities → Skills, or save from Claude's skill card).
@@ -90,7 +89,6 @@ then only decides; code executes. Same pattern for any site you use weekly.
 | Claude's tools fail to reach the browser | `docker compose exec browser curl -s http://127.0.0.1:9222/json/version` should print Chromium's version JSON. If not, check `CHROME_CLI` contains `--remote-debugging-port=9222` and is **not** quoted. |
 | MCP service not running | `docker compose logs browser \| grep -i mcp`; s6 restarts it automatically |
 | claude.ai says "Authorization with the MCP server failed" | see the OAuth notes in docs/cloudflare.md |
-| TLS error on `mcp.browser.zsrobinson.com` | the certificate caveat in docs/cloudflare.md |
 
 ## Security notes
 
