@@ -6,6 +6,10 @@
 
 cd /config || exit 1
 
+# NodeSource's Node bundles its own OpenSSL and can choke on the distro's
+# openssl.cnf ("OpenSSL configuration error"). Node doesn't need it.
+export OPENSSL_CONF=/dev/null
+
 exec s6-setuidgid abc \
   /opt/mcp/node_modules/.bin/playwright-mcp \
     --cdp-endpoint=http://127.0.0.1:9222 \

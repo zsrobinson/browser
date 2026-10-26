@@ -18,6 +18,7 @@ RUN \
   echo "**** npm: bundled with NodeSource's nodejs (which the base image uses); Debian's nodejs needs the separate package ****" && \
   (command -v npm >/dev/null || apt-get install -y --no-install-recommends npm) && \
   echo "**** install playwright mcp ****" && \
+  export OPENSSL_CONF=/dev/null && \
   mkdir -p /opt/mcp && cd /opt/mcp && \
   npm init -y >/dev/null && \
   npm install --omit=dev @playwright/mcp@latest && \
