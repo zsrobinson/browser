@@ -1,0 +1,15 @@
+#!/usr/bin/with-contenv bash
+# Playwright MCP, attached to this container's own Chromium over localhost CDP.
+# Supervised by s6 alongside the desktop: if it dies, s6 restarts it.
+# It connects to Chromium lazily (on the first tool call), so start order
+# doesn't matter and a Chromium restart doesn't take it down.
+
+cd /config || exit 1
+
+exec s6-setuidgid abc \
+  /opt/mcp/node_modules/.bin/playwright-mcp \
+    --cdp-endpoint=http://127.0.0.1:9222 \
+    --output-dir=/config/mcp-output \
+    --host=0.0.0.0 \
+    --port=8931 \
+    --allowed-hosts="${MCP_HOSTNAME},browser:8931,localhost:8931"

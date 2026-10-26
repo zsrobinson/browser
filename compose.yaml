@@ -1,0 +1,42 @@
+# browser — a signed-in Chromium on the NAS that Claude can drive
+# and Zach can watch at https://browser.zsrobinson.com
+#
+# Two containers. Nothing publishes a host port: everything reaches the
+# outside world through the Cloudflare Tunnel, behind Cloudflare Access.
+# Sized for a 2GB Synology (~1.5GB worst case).
+
+name: browser
+
+services:
+  # Chromium + web viewer (port 3000) + Playwright MCP (port 8931).
+  # The profile (cookies, logins) lives in ./data and survives restarts.
+  browser:
+    build: ./image
+    image: browser:local
+    environment:
+      - PUID=${PUID}
+      - PGID=${PGID}
+      - TZ=${TZ}
+      - MCP_HOSTNAME=${MCP_HOSTNAME}
+      - RESTART_APP=true       # relaunch Chromium if its window gets closed
+      # Unquoted on purpose: quotes in list-form env become part of the value
+      # and Chromium silently ignores the flags.
+      - CHROME_CLI=--remote-debugging-port=9222 --user-data-dir=/config/agent-profile --no-first-run --no-default-browser-check --disable-features=Translate,MediaRouter --renderer-process-limit=3 about:blank
+    volumes:
+      - ./data:/config
+    shm_size: "1gb"            # Docker's 64MB default crashes Chromium on real pages
+    mem_limit: 1400m           # restart the browser rather than starve the NAS
+    restart: unless-stopped
+
+  # Cloudflare Tunnel. Routes (set in the Cloudflare dashboard):
+  #   browser.zsrobinson.com      -> http://browser:3000   (viewer)
+  #   mcp.browser.zsrobinson.com  -> http://browser:8931   (Claude connector)
+  cloudflared:
+    image: cloudflare/cloudflared:latest
+    command: tunnel --no-autoupdate run
+    environment:
+      - TUNNEL_TOKEN=${TUNNEL_TOKEN}
+    mem_limit: 96m
+    depends_on:
+      - browser
+    restart: unless-stopped
