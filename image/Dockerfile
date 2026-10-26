@@ -22,6 +22,8 @@ RUN \
   mkdir -p /opt/mcp && cd /opt/mcp && \
   npm init -y >/dev/null && \
   npm install --omit=dev @playwright/mcp@latest && \
+  echo "**** let non-root processes (abc) read the OpenSSL config ****" && \
+  chmod a+rx /etc/ssl && chmod a+r /etc/ssl/openssl.cnf && \
   echo "**** cleanup ****" && \
   npm cache clean --force && \
   apt-get autoclean && \
